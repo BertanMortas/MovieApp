@@ -1,18 +1,5 @@
 package com.bilgeadam.constant;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-
-//@AllArgsConstructor
-//@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@NoArgsConstructor
 public class EndPointList {
     public static final String USER="/user";
     public static final String UPDATE_DTO="/update-dto";
