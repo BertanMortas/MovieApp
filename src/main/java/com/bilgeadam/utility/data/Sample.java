@@ -12,7 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class Sample {
-
     public Integer id;
     public String url;
     public String name;
@@ -36,5 +35,4 @@ public class Sample {
     public String summary;
     public int updated;
     public _links _links;
-
 }

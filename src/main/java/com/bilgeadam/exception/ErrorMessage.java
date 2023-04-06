@@ -8,14 +8,15 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Component
 public class ErrorMessage {
     int code;
     String message;
-    // fields --> validasyonlardan gelen hataları gösterir
+
+    //fields --> validasyonlardan dönen hataların yakalanarak gösterildiği alan
     List<String> fields;
 }

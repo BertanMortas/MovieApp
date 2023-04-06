@@ -37,6 +37,7 @@ public void setPreviousepisode(Previousepisode previousepisode){
 
 public Previousepisode getPreviousepisode(){
 
+
  	return this.previousepisode;
 
 }

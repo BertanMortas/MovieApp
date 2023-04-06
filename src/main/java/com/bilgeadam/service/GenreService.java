@@ -45,20 +45,28 @@ public class GenreService implements ICrudService<Genre, Integer> {
     public Optional<Genre> findById(Integer id) {
         return genreRepository.findById(id);
     }
-    // Dataimpl için gelen String değerlerin integer a dönmesi lazım
-    public List<Integer> createGenresWithName(List<String> genres){
+
+    //DataImpl için gelen String genre değerinin Integer' a dönüştürülmesi
+    public List<Integer> createGenresWithNames(List<String> genres){
         List<Integer> genreList = new ArrayList<>();
-        for (String name: genres) {
+        for(String name : genres){
             Optional<Genre> genre = genreRepository.findOptionalByName(name);
-            if (genre.isPresent()) {
+            if (genre.isPresent()){
                 genreList.add(genre.get().getId());
             }else {
                 Genre myGenre = Genre.builder()
-                        .name(name).build();
-                save(myGenre); // yukardaki save i direkt çağırdık
+                        .name(name)
+                        .build();
+                save(myGenre);
                 genreList.add(myGenre.getId());
             }
         }
         return genreList;
     }
+
+
+
+
+
+
 }

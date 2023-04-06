@@ -27,6 +27,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class DataImpl implements ApplicationRunner {
+
     private final MovieService movieService;
     private final GenreService genreService;
     private final CommentService commentService;
@@ -34,25 +35,26 @@ public class DataImpl implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-//        getAllMovies();
-//        createUser();
-//        setCommentsByMovieId();
+        /*getAllMovies();
+        createUser();
+        setCommentsByMovieId();*/
     }
+
     public void getAllMovies(){
         try {
             URL url = new URL("https://api.tvmaze.com/shows");
-            HttpURLConnection httpURLConnection =(HttpURLConnection) url.openConnection();
+            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
 
             InputStream inputStream = httpURLConnection.getInputStream();
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             String value = "";
             value = bufferedReader.readLine();
-            //Gson--> json formatın dönüştürülmüş hali.
-            Sample[] array = new Gson().fromJson(value, Sample[].class); // data da oluşturulan sınıf
+            //Gson --> Json formatın dönüştürülmüş hali
+            Sample[] array = new Gson().fromJson(value, Sample[].class);
 
             Arrays.asList(array).forEach(x -> {
                 Movie movie = null;
-                if (x.network == null) {
+                if (x.network == null){
                     movie = Movie.builder()
                             .id(x.id)
                             .url(x.url)
@@ -61,10 +63,10 @@ public class DataImpl implements ApplicationRunner {
                             .premiered(LocalDate.parse(x.premiered))
                             .summary(x.summary)
                             .name(x.name)
-                            .genreId(genreService.createGenresWithName(x.genres))
+                            .genreId(genreService.createGenresWithNames(x.genres))
                             .rating(x.rating.average)
                             .build();
-                }else{
+                }else {
                     movie = Movie.builder()
                             .id(x.id)
                             .url(x.url)
@@ -73,7 +75,7 @@ public class DataImpl implements ApplicationRunner {
                             .premiered(LocalDate.parse(x.premiered))
                             .summary(x.summary)
                             .name(x.name)
-                            .genreId(genreService.createGenresWithName(x.genres))
+                            .genreId(genreService.createGenresWithNames(x.genres))
                             .rating(x.rating.average)
                             .country(x.network.country.name)
                             .build();
@@ -84,6 +86,7 @@ public class DataImpl implements ApplicationRunner {
             throw new RuntimeException(e);
         }
     }
+
     public void createUser(){
         //------------------------------User1---------------------------------------
         User user1 = User.builder()
@@ -97,9 +100,9 @@ public class DataImpl implements ApplicationRunner {
                 .genreId(List.of(1,2,5,6))
                 .build();
         List<Comment> comment1 = List.of(
-                Comment.builder().content("İyi").date(LocalDate.now()).userId(1).movieId(18).build(),
-                Comment.builder().content("Kötü").date(LocalDate.now()).userId(1).movieId(127).build(),
-                Comment.builder().content("İdare Eder").date(LocalDate.now()).userId(1).movieId(78).build()
+            Comment.builder().content("İyi").date(LocalDate.now()).userId(1).movieId(18).build(),
+            Comment.builder().content("Kötü").date(LocalDate.now()).userId(1).movieId(127).build(),
+            Comment.builder().content("İdare Eder").date(LocalDate.now()).userId(1).movieId(78).build()
         );
         commentService.saveAll(comment1);
         user1.setCommentId(comment1.stream().map(x -> x.getId()).toList());

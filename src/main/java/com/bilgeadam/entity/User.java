@@ -37,7 +37,7 @@ public class User {
     //@Size(min = 10, max = 50, message = "Min 10 max 50 karakter bulunabilir")
     private String email;
     @Column(length = 15)
-    @Lob //persistence üyesidir. bir veri tipinin "bigdata" olduğunu gösterir. Max 2048 karakter(String)
+    //@Lob //persistence üyesidir. bir veri tipinin "bigdata" olduğunu gösterir. Max 2048 karakter(String)
     private String phone;
     @Column(length = 32)
     //Bir regex tanımlamak için @Pattern kullanılır. Genel olarak email, password gibi property'ler için kullanılır
