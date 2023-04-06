@@ -16,5 +16,6 @@ import java.util.List;
 public class ErrorMessage {
     int code;
     String message;
+    // fields --> validasyonlardan gelen hataları gösterir
     List<String> fields;
 }

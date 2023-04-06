@@ -24,11 +24,12 @@ public class Movie implements Serializable {
     private String name;
     private String country;
     private double rating;
+    @Lob
     private String summary;
     private LocalDate premiered;
     private String url;
     @ElementCollection //ManyToMany
     private List<Integer> genreId;
-    @ElementCollection //OneToMany
+    @ElementCollection(fetch = FetchType.EAGER) //OneToMany
     private List<Integer> commentId;
 }

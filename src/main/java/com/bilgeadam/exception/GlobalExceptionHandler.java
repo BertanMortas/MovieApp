@@ -1,16 +1,15 @@
 package com.bilgeadam.exception;
+import com.bilgeadam.exception.custom.UserEmailExistsException;
+import com.bilgeadam.exception.custom.UserNameNotFoundException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Bu sınıf uygulama içinde oluşacak tüm istisnaların yakalanması için kullanılacaktır.
@@ -21,7 +20,7 @@ import java.util.List;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    private ErrorMessage createErrorMessage(ErrorType errorType,Exception exception){
+    private ErrorMessage createErrorMessage(EErrorType errorType, Exception exception){
         System.out.println("Bu kısımda hata mesajlarnın loglama işlemlerini yapmalıyız.");
         System.out.println("Hata mesajı: "+ exception.toString());
         return ErrorMessage.builder()
@@ -29,79 +28,52 @@ public class GlobalExceptionHandler {
                 .message(errorType.getMessage())
                 .build();
     }
-
-    @ExceptionHandler(MovieAppException.class)
     @ResponseBody
-    public ResponseEntity<ErrorMessage> handlerJava7MonoException(MovieAppException exception){
-        System.out.println("Java7MonoException hatası...: "+ exception.toString());
-        return new ResponseEntity(createErrorMessage(exception.getErrorType(),exception),exception.getErrorType().getHttpStatus());
-    }
-
-    @ExceptionHandler(ArithmeticException.class)
-    @ResponseBody
-    public ResponseEntity<String> handleArithmeticException(ArithmeticException exception){
-        /**
-         * Burada oluşan istisna ile ilgili eğer log tutulacak ise bu işlemler yapılır.
-         */
-        System.out.println("Aritmetik hatası...: "+ exception.toString());
-        return ResponseEntity.ok("Sıfıra bölme işlem hatası");
-    }
-
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    @ResponseBody
-    public ResponseEntity<ErrorMessage> handleHttpMessageNotReadableException(HttpMessageNotReadableException exception){
-        ErrorType errorType = ErrorType.BAD_REQUEST;
-        return new ResponseEntity<>(createErrorMessage(errorType,exception),errorType.getHttpStatus());
-    }
-
-    @ExceptionHandler(MissingPathVariableException.class)
-    @ResponseBody
-    public final ResponseEntity<ErrorMessage> handleMissingPathVariableException(MissingPathVariableException exception){
-        ErrorType errorType = ErrorType.BAD_REQUEST;
-        return new ResponseEntity<>(createErrorMessage(errorType,exception),errorType.getHttpStatus());
-    }
-
-    //    @ExceptionHandler(Exception.class)
-//    @ResponseBody
-//    public ResponseEntity<String> handleException(Exception exception){
-//        return ResponseEntity.badRequest().body("Beklenmeyen bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.");
-//    }
-    @ExceptionHandler(Exception.class)
-    @ResponseBody
-    public ResponseEntity<ErrorMessage> handleException(Exception exception){
-        ErrorType errorType = ErrorType.ERROR;
-        return new ResponseEntity<>(createErrorMessage(errorType,exception),errorType.getHttpStatus());
-    }
-
-
-    @ExceptionHandler(InvalidFormatException.class)
-    public ResponseEntity<ErrorMessage> handleInvalidFormatException(
-            InvalidFormatException exception) {
-        ErrorType errorType = ErrorType.BAD_REQUEST;
-        return new ResponseEntity<>(createErrorMessage(errorType, exception), errorType.getHttpStatus());
-    }
-
-    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<ErrorMessage> handleMethodArgumentMisMatchException(
-            MethodArgumentTypeMismatchException exception) {
-
-        ErrorType errorType = ErrorType.BAD_REQUEST;
-        return new ResponseEntity<>(createErrorMessage(errorType, exception), errorType.getHttpStatus());
-    }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public final ResponseEntity<ErrorMessage> handleMethodArgumentNotValidException(
-            MethodArgumentNotValidException exception) {
-        ErrorType errorType = ErrorType.BAD_REQUEST;
-        List<String> fields = new ArrayList<>();
-        exception
-                .getBindingResult()
-                .getFieldErrors()
-                .forEach(e -> fields.add(e.getField() + ": " + e.getDefaultMessage()));
-        ErrorMessage errorMessage = createErrorMessage(errorType, exception);
-        errorMessage.setFields(fields);
-        return new ResponseEntity<>(errorMessage, errorType.getHttpStatus());
+    public ResponseEntity<ErrorMessage> handleMethodArgumentException(MethodArgumentNotValidException exception){
+        EErrorType errorType = EErrorType.METHOD_NOT_VALID_ARGUMENT_ERROR;
+        return new ResponseEntity<>(createErrorMessage(errorType, exception), errorType.getHttpStatus());
     }
 
+    @ResponseBody
+    @ExceptionHandler(UserNameNotFoundException.class)
+    public ResponseEntity<ErrorMessage> handleUserEmailExistsException(UserEmailExistsException exception){
+        EErrorType errorType = EErrorType.REGISTER_ERROR_EMAIL_EXISTS;
+        HttpStatus httpStatus = errorType.getHttpStatus();
+        return new ResponseEntity<>(createErrorMessage(errorType,exception),httpStatus);
+    }
+    @ResponseBody
+    @ExceptionHandler(UserNameNotFoundException.class)
+    public ResponseEntity<ErrorMessage> handleUserNameNotFoundException(UserEmailExistsException exception){
+        EErrorType errorType = EErrorType.REGISTER_ERROR_EMAIL_EXISTS;
+        HttpStatus httpStatus = errorType.getHttpStatus();
+        return new ResponseEntity<>(createErrorMessage(errorType,exception),httpStatus);
+    }
+    @ResponseBody
+    @ExceptionHandler(UserNameNotFoundException.class)
+    public ResponseEntity<ErrorMessage> handleUserWrongPasswordException(UserEmailExistsException exception){
+        EErrorType errorType = EErrorType.REGISTER_ERROR_EMAIL_EXISTS;
+        HttpStatus httpStatus = errorType.getHttpStatus();
+        return new ResponseEntity<>(createErrorMessage(errorType,exception),httpStatus);
+    }
+    @ResponseBody
+    @ExceptionHandler(InvalidFormatException.class)
+    public ResponseEntity<ErrorMessage> handleInvalidFormatException(InvalidFormatException exception){
+        EErrorType errorType = EErrorType.INVALID_PARAMETER;
+        return new ResponseEntity<>(createErrorMessage(errorType,exception),errorType.getHttpStatus());
+    }
 
+    @ResponseBody
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorMessage> handleMethodMismatchException(MethodArgumentTypeMismatchException exception){
+        EErrorType errorType = EErrorType.METHOD_MIS_MATCH_ERROR;
+        return new ResponseEntity<>(createErrorMessage(errorType,exception),errorType.getHttpStatus());
+    }
+
+    @ResponseBody
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorMessage> handleHttpMessageNotReadableException(HttpMessageNotReadableException exception){
+        EErrorType errorType = EErrorType.METHOD_MIS_MATCH_ERROR;
+        return new ResponseEntity<>(createErrorMessage(errorType,exception),errorType.getHttpStatus());
+    }
 }
